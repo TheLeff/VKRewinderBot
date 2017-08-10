@@ -1,8 +1,9 @@
-# VkChatBot
-Простейший чат-бот для vk.com
-Отвечает по шаблону, если не нашел шаблон, отвечает случайной фразой из списка
+# Bot Rewinder
 
-Токен из конфига фейковый, даже не пытайтесь.
+A bot for daily usage. Base project - https://github.com/Etyfly
+
+Part of code was taken from https://github.com/biblelamp
+
+Служебный бот для разных случаев в жизни. Проект, взятый за основу - https://github.com/Etyfly
 
 Часть кода позаимствована у https://github.com/biblelamp
-
