@@ -2,14 +2,15 @@ package main.bot;
 
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
-
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.messages.Message;
 
-
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -19,6 +20,9 @@ import java.util.Properties;
 
 
 public class Solution {
+
+    static List<Calendar> FullCalendar = new ArrayList<>();
+    static SimpleDateFormat sdf = new SimpleDateFormat("hh-mm");
 
     public static void main(String[] args) throws Exception {
         ChatBot chatBot = new ChatBot();
@@ -32,7 +36,15 @@ public class Solution {
 
         UserActor actor = new UserActor(Integer.parseInt(properties.getProperty("userId")), properties.getProperty("accessToken"));
 
-        while (true) {
+
+        while (true) { //todo: check calendar
+            if (!FullCalendar.isEmpty()) {
+                Calendar RightNow = CalendarCheck();
+                if (RightNow != null) {
+                    vk.messages().send(actor).
+                            userId(RightNow.getUserID()).message(RightNow.getNote()).execute();
+                }
+            }
             Thread.sleep(1000);
             List<Message> messageList = vk.messages().get(actor).execute().getItems();
             for (Message message : messageList) {
@@ -45,4 +57,20 @@ public class Solution {
             }
         }
     }
+
+
+    public static Calendar CalendarCheck() {
+        Date brb = new Date();
+
+        for (int i = 0; i < FullCalendar.size(); i++) {
+            if ((FullCalendar.get(i).getTime().getTime() - brb.getTime()) < 60000) {
+
+                Calendar ToReturn = FullCalendar.get(i);
+                FullCalendar.remove(i);
+                return ToReturn;
+            }
+        }
+        return null;
+    }
+
 }
