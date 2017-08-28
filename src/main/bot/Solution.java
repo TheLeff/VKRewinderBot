@@ -5,6 +5,8 @@ import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.messages.Message;
+import main.Exceptions.HardResetException;
+import main.Exceptions.ManualRemoteReset;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,15 +16,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-/**
- * Created by etryfly on 22.06.17.
- */
+import static java.lang.System.exit;
+
 
 
 public class Solution {
 
-    static List<Calendar> FullCalendar = new ArrayList<>();
-    static SimpleDateFormat sdf = new SimpleDateFormat("hh-mm");
+    private static List<Calendar> FullCalendar = new ArrayList<>();
+    private static SimpleDateFormat sdf = new SimpleDateFormat("hh-mm");
 
     public static void main(String[] args) throws Exception {
         ChatBot chatBot = new ChatBot();
@@ -37,7 +38,16 @@ public class Solution {
         UserActor actor = new UserActor(Integer.parseInt(properties.getProperty("userId")), properties.getProperty("accessToken"));
 
 
-        while (true) { //todo: check calendar
+        //todo: check calendar
+
+
+        while (true) {
+            try {
+                AppCheck();
+            } catch (ManualRemoteReset e) {
+                System.out.println("BOT TURNED OFF MANUALLY VIA APP");
+                exit(1);
+            }
             if (!FullCalendar.isEmpty()) {
                 Calendar RightNow = CalendarCheck();
                 if (RightNow != null) {
@@ -51,15 +61,30 @@ public class Solution {
                 if (!message.isReadState()) {
                     int userId = message.getUserId();
                     System.out.println(message.getBody());
-                    System.out.println(vk.messages().send(actor).
-                            userId(userId).message(chatBot.sayInReturn(message.getBody())).execute());
+                    try {
+                        System.out.println(vk.messages().send(actor).
+                                userId(userId).message(chatBot.sayInReturn(message.getBody())).execute());
+                    } catch (HardResetException e) {
+                        System.out.println("BOT TURNED OFF BY " + userId);
+                        exit(1);
+                    }
+
                 }
             }
         }
     }
 
+    private static void AppCheck() throws ManualRemoteReset {
+        boolean RemoteStatus = true;
 
-    public static Calendar CalendarCheck() {
+
+        //todo: controlling app
+
+        if (!RemoteStatus)
+            throw new ManualRemoteReset("BOT TURNED OFF REMOTELY");
+    }
+
+    private static Calendar CalendarCheck() {
         Date brb = new Date();
 
         for (int i = 0; i < FullCalendar.size(); i++) {

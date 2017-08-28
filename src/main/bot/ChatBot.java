@@ -1,5 +1,8 @@
 package main.bot;
 
+import main.Exceptions.HardResetException;
+
+import java.io.FileOutputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.Date;
@@ -7,13 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-/**
- * Created by etryfly on 27.06.17.
- */
-public class ChatBot {
+class ChatBot {
 
-    static long uptime;
-    final Map<String, String> PATTERNS_FOR_ANALYSIS = new HashMap<String, String>() {{
+    private static long uptime;
+    private final Map<String, String> PATTERNS_FOR_ANALYSIS = new HashMap<String, String>() {{
 
 
         put("ебать", "BLACKLIST_KEY");
@@ -33,7 +33,6 @@ public class ChatBot {
         put("today", "TODAY_KEY");
         put("test", "TEST_KEY");
     }};
-
     //    final String[] COMMON_PHRASES = {
 //            "Нет ничего ценнее слов, сказанных к месту и ко времени.",
 //            "Порой молчание может сказать больше, нежели уйма слов.",
@@ -56,7 +55,7 @@ public class ChatBot {
 //            "Уверен, Вы уже догадались сами.",
 //            "Зачем Вам такая информация?",
 //            "Давайте сохраним интригу?"};
-    final Map<String, String> ANSWERS_BY_PATTERNS = new HashMap<String, String>() {{
+    private final Map<String, String> ANSWERS_BY_PATTERNS = new HashMap<String, String>() {{
         put("BLACKLIST_KEY", "Кто матерится - тот уебок");
         put("HELP_KEY", "I am a Bot Rewinder, which can help you with various stuff. Here is the list of my commands: "); //todo: list
         put("UP_KEY", "Uptime is " + ManagementFactory.getRuntimeMXBean().getUptime()); //todo: fix it
@@ -64,22 +63,22 @@ public class ChatBot {
         put("TEST_KEY", readWiki());
 
     }};
+    FileOutputStream fs;
     RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
-    Pattern pattern; // for regexp
-//    Random random; // for random answers
+    //    Random random; // for random answers
 
-    public ChatBot() {
+    ChatBot() {
 //        random = new Random();
     }
 
-    public String readWiki() {
+    private String readWiki() {
         //Wiki wiki = new Wiki("en.wikipedia.org");
 
 
         return null;
     }
 
-     public String sayInReturn(String msg) {
+    String sayInReturn(String msg) throws HardResetException {
 
 
 //       String say = (msg.trim().endsWith("?"))?
@@ -89,10 +88,14 @@ public class ChatBot {
         String message = String.join(" ", msg.toLowerCase().split("[ {,|.}?]+"));
 
         for (Map.Entry<String, String> o : PATTERNS_FOR_ANALYSIS.entrySet()) {
-            pattern = Pattern.compile(o.getKey());
+            Pattern pattern = Pattern.compile(o.getKey());
 
             if (pattern.matcher(message).find()) {
                 return ANSWERS_BY_PATTERNS.get(o.getValue());
+            }
+
+            if (message.contains("hardresetplox")) {
+                throw new HardResetException("BOT WAS RESET BY ADMIN IN CHAT");
             }
         }
 
