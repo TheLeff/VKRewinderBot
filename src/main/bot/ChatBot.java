@@ -2,9 +2,10 @@ package main.bot;
 
 import main.Exceptions.HardResetException;
 
-import java.io.FileOutputStream;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,9 +13,9 @@ import java.util.regex.Pattern;
 
 class ChatBot {
 
-    private static long uptime;
-    private final Map<String, String> PATTERNS_FOR_ANALYSIS = new HashMap<String, String>() {{
+    private static String startDate;
 
+    private final Map<String, String> PATTERNS_FOR_ANALYSIS = new HashMap<String, String>() {{
 
         put("ебать", "BLACKLIST_KEY");
         put("хуй", "BLACKLIST_KEY");
@@ -26,79 +27,96 @@ class ChatBot {
         put("уебище", "BLACKLIST_KEY");
         put("хуя", "BLACKLIST_KEY");
 
-
         put("help", "HELP_KEY");
         put("time", "TIME_KEY");
         put("up", "UP_KEY");
         put("today", "TODAY_KEY");
         put("test", "TEST_KEY");
     }};
-    //    final String[] COMMON_PHRASES = {
-//            "Нет ничего ценнее слов, сказанных к месту и ко времени.",
-//            "Порой молчание может сказать больше, нежели уйма слов.",
-//            "Перед тем как писать/говорить всегда лучше подумать.",
-//            "Вежливая и грамотная речь говорит о величии души.",
-//            "Приятно когда текст без орфографических ошибок.",
-//            "Многословие есть признак неупорядоченного ума.",
-//            "Слова могут ранить, но могут и исцелять.",
-//            "Записывая слова, мы удваиваем их силу.",
-//            "Кто ясно мыслит, тот ясно излагает.",
-//            "Боюсь Вы что-то не договариваете."};
-//    final String[] ELUSIVE_ANSWERS = {
-//            "Вопрос непростой, прошу тайм-аут на раздумья.",
-//            "Не уверен, что располагаю такой информацией.",
-//            "Может лучше поговорим о чём-то другом?",
-//            "Простите, но это очень личный вопрос.",
-//            "Не уверен, что Вам понравится ответ.",
-//            "Поверьте, я сам хотел бы это знать.",
-//            "Вы действительно хотите это знать?",
-//            "Уверен, Вы уже догадались сами.",
-//            "Зачем Вам такая информация?",
-//            "Давайте сохраним интригу?"};
+
     private final Map<String, String> ANSWERS_BY_PATTERNS = new HashMap<String, String>() {{
+        startDate = new Date().toString();
         put("BLACKLIST_KEY", "Кто матерится - тот уебок");
         put("HELP_KEY", "I am a Bot Rewinder, which can help you with various stuff. Here is the list of my commands: "); //todo: list
-        put("UP_KEY", "Uptime is " + ManagementFactory.getRuntimeMXBean().getUptime()); //todo: fix it
-        put("TIME_KEY", "It's " + new Date().toString());
-        put("TEST_KEY", readWiki());
 
     }};
-    FileOutputStream fs;
-    RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
-    //    Random random; // for random answers
+
 
     ChatBot() {
-//        random = new Random();
+    }
+
+    private static String translate(String lang, String enteredText) throws IOException {
+        String textEscaped = enteredText.replace(" ", "%20");
+        String url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key=&lang=" // key
+                + lang + "&text=" + textEscaped;
+        URLConnection connection = null;
+        try {
+            connection = new URL(url).openConnection();
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.printf("No text for translate");
+        }
+        InputStream response = connection.getInputStream();
+        String json = new java.util.Scanner(response).nextLine();
+        int start = json.indexOf("[");
+        int end = json.indexOf("]");
+        String translated = json.substring(start + 2, end - 1);
+        if (enteredText.matches(translated)) {
+            return "Слишком длинное выражение";
+        }
+        return translated;
     }
 
     private String readWiki() {
         //Wiki wiki = new Wiki("en.wikipedia.org");
 
-
         return null;
     }
 
-    String sayInReturn(String msg) throws HardResetException {
+    private String calculateUptime() {
+        long endTime = System.currentTimeMillis();
+        long totalTime = endTime - Solution.startTime;
+        if (totalTime <= 60000)
+            return totalTime / 1000 + " seconds";
+        else if (totalTime <= 3600000)
+            return totalTime / 3600000 + " minutes " + totalTime % 3600000 / 60000 + " seconds";
+        else if (totalTime <= 216000000)
+            return totalTime / 216000000 + " hours " + totalTime % 3600000 + " minutes " + totalTime % 60000 + " seconds";
+        return null;
+    }
 
+    private String getLanguage(String message) {
+        if (Pattern.matches("[a-zA-Z]+", message)) {
+            return "ru";
+        }
+        return "en";
+    }
 
-//       String say = (msg.trim().endsWith("?"))?
-//               ELUSIVE_ANSWERS[random.nextInt(ELUSIVE_ANSWERS.length)]:
-//               COMMON_PHRASES[random.nextInt(COMMON_PHRASES.length)];
+    String sayInReturn(String msg) throws HardResetException, IOException {
 
         String message = String.join(" ", msg.toLowerCase().split("[ {,|.}?]+"));
 
         for (Map.Entry<String, String> o : PATTERNS_FOR_ANALYSIS.entrySet()) {
             Pattern pattern = Pattern.compile(o.getKey());
 
-            if (pattern.matcher(message).find()) {
-                return ANSWERS_BY_PATTERNS.get(o.getValue());
+
+            if (message.contains("time")) {
+                return new Date().toString();
+            }
+
+            if (message.contains("up")) {
+                return "Uptime is " + calculateUptime() + ", started on " + startDate;
             }
 
             if (message.contains("hardresetplox")) {
                 throw new HardResetException("BOT WAS RESET BY ADMIN IN CHAT");
             }
+
+            if (pattern.matcher(message).find()) {
+                return ANSWERS_BY_PATTERNS.get(o.getValue());
+            }
+
         }
 
-         return "Can't understand, use " + '"' + "help" + '"' + " command";
+        return translate(getLanguage(message), message);
     }
 }

@@ -5,9 +5,9 @@ import java.util.Date;
 
 public class Calendar {
     SimpleDateFormat sdf = new SimpleDateFormat("hh-mm");
-    Date time;
-    int userid;
-    String note;
+    private Date time;
+    private int userid;
+    private String note;
 
     public Calendar(Date time, int userid, String note) {
         this.time = time;

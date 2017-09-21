@@ -3,29 +3,34 @@ package main.bot;
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
+import com.vk.api.sdk.exceptions.ApiException;
+import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.messages.Message;
 import main.Exceptions.HardResetException;
-import main.Exceptions.ManualRemoteReset;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
 import static java.lang.System.exit;
 
+//import main.Exceptions.ManualRemoteReset;
+//import java.text.SimpleDateFormat;
+//import java.util.ArrayList;
+
 
 
 public class Solution {
 
-    private static List<Calendar> FullCalendar = new ArrayList<>();
-    private static SimpleDateFormat sdf = new SimpleDateFormat("hh-mm");
+    //    private static List<Calendar> FullCalendar = new ArrayList<>();
+//    private static SimpleDateFormat sdf = new SimpleDateFormat("hh-mm");
+    static long startTime;
 
     public static void main(String[] args) throws Exception {
+
+        startTime = System.currentTimeMillis();
         ChatBot chatBot = new ChatBot();
 
         TransportClient transportClient = HttpTransportClient.getInstance();
@@ -37,24 +42,28 @@ public class Solution {
 
         UserActor actor = new UserActor(Integer.parseInt(properties.getProperty("userId")), properties.getProperty("accessToken"));
 
+        vk.messages().send(actor).
+                userId(275752427).message("BOT ONLINE").execute();
 
         //todo: check calendar
 
 
         while (true) {
-            try {
-                AppCheck();
-            } catch (ManualRemoteReset e) {
-                System.out.println("BOT TURNED OFF MANUALLY VIA APP");
-                exit(1);
-            }
-            if (!FullCalendar.isEmpty()) {
-                Calendar RightNow = CalendarCheck();
-                if (RightNow != null) {
-                    vk.messages().send(actor).
-                            userId(RightNow.getUserID()).message(RightNow.getNote()).execute();
-                }
-            }
+//            try {
+//                AppCheck();
+//            } catch (ManualRemoteReset e) {
+//                System.out.println("BOT TURNED OFF MANUALLY VIA APP");
+//                exit(1);
+//            }
+
+
+//            if (!FullCalendar.isEmpty()) {
+//                Calendar RightNow = CalendarCheck();
+//                if (RightNow != null) {
+//                    vk.messages().send(actor).
+//                            userId(RightNow.getUserID()).message(RightNow.getNote()).execute();
+//                }
+//            }
             Thread.sleep(1000);
             List<Message> messageList = vk.messages().get(actor).execute().getItems();
             for (Message message : messageList) {
@@ -62,6 +71,8 @@ public class Solution {
                     int userId = message.getUserId();
                     System.out.println(message.getBody());
                     try {
+                        if (message.getBody().contains("cat") || message.getBody().contains("кот") || message.getBody().contains("кошка"))
+                            sendCat(vk, actor, message);
                         System.out.println(vk.messages().send(actor).
                                 userId(userId).message(chatBot.sayInReturn(message.getBody())).execute());
                     } catch (HardResetException e) {
@@ -70,32 +81,41 @@ public class Solution {
                     }
 
                 }
+
             }
         }
     }
 
-    private static void AppCheck() throws ManualRemoteReset {
-        boolean RemoteStatus = true;
-
-
-        //todo: controlling app
-
-        if (!RemoteStatus)
-            throw new ManualRemoteReset("BOT TURNED OFF REMOTELY");
-    }
-
-    private static Calendar CalendarCheck() {
-        Date brb = new Date();
-
-        for (int i = 0; i < FullCalendar.size(); i++) {
-            if ((FullCalendar.get(i).getTime().getTime() - brb.getTime()) < 60000) {
-
-                Calendar ToReturn = FullCalendar.get(i);
-                FullCalendar.remove(i);
-                return ToReturn;
-            }
+    private static void sendCat(VkApiClient vk, UserActor actor, Message message) {
+        try {
+            int userId = message.getUserId();
+            vk.messages().send(actor).userId(userId).attachment("photo275752427_456242731").execute();
+        } catch (ApiException | ClientException e) {
+            e.printStackTrace();
         }
-        return null;
     }
+
+//    private static void AppCheck() throws ManualRemoteReset {
+//        boolean RemoteStatus = true;
+//
+//        //todo: controlling app
+//
+//        if (!RemoteStatus)
+//            throw new ManualRemoteReset("BOT TURNED OFF REMOTELY");
+//    }
+
+//    private static Calendar CalendarCheck() {
+//        Date brb = new Date();
+//
+//        for (int i = 0; i < FullCalendar.size(); i++) {
+//            if ((FullCalendar.get(i).getTime().getTime() - brb.getTime()) < 60000) {
+//
+//                Calendar ToReturn = FullCalendar.get(i);
+//                FullCalendar.remove(i);
+//                return ToReturn;
+//            }
+//        }
+//        return null;
+//    }
 
 }
