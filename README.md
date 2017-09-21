@@ -7,3 +7,12 @@ Part of code was taken from https://github.com/biblelamp
 Служебный бот для разных случаев в жизни. Проект, взятый за основу - https://github.com/Etyfly
 
 Часть кода позаимствована у https://github.com/biblelamp
+
+
+todo: 
+
+Поиск аудио по ключевому слову
+
+Парс расписания вуза
+
+Интеграция с вики
