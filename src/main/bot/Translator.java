@@ -33,7 +33,7 @@ public class Translator {
     static String YandexTranslate(String enteredText) throws IOException {
 
         String textEscaped = enteredText.replace(" ", "%20");
-        String url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key=&lang=" // key
+        String url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20170921T152134Z.93cdd37345a03a7f.3c0d40e83517a07da4922a1e2bf3902f6012822c&lang=" // key
                 + getLanguage(enteredText) + "&text=" + textEscaped;
 
         URLConnection connection = null;
