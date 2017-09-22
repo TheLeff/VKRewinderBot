@@ -35,13 +35,17 @@ public class Translator {
         String textEscaped = enteredText.replace(" ", "%20");
         String url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key=&lang=" // key
                 + getLanguage(enteredText) + "&text=" + textEscaped;
+
         URLConnection connection = null;
+
         try {
             connection = new URL(url).openConnection();
         } catch (ArrayIndexOutOfBoundsException e) {
             System.out.printf("No text for translate");
         }
+
         InputStream response;
+
         if (connection != null) {
             response = connection.getInputStream();
 
