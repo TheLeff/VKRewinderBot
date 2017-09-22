@@ -3,8 +3,6 @@ package main.bot;
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
-import com.vk.api.sdk.exceptions.ApiException;
-import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.messages.Message;
 import main.Exceptions.HardResetException;
@@ -19,7 +17,6 @@ import static java.lang.System.exit;
 //import main.Exceptions.ManualRemoteReset;
 //import java.text.SimpleDateFormat;
 //import java.util.ArrayList;
-
 
 
 public class Solution {
@@ -42,8 +39,8 @@ public class Solution {
 
         UserActor actor = new UserActor(Integer.parseInt(properties.getProperty("userId")), properties.getProperty("accessToken"));
 
-        vk.messages().send(actor).
-                userId(275752427).message("BOT ONLINE").execute();
+//        vk.messages().send(actor).
+//                userId(275752427).message("BOT ONLINE").execute();
 
         //todo: check calendar
 
@@ -71,10 +68,18 @@ public class Solution {
                     int userId = message.getUserId();
                     System.out.println(message.getBody());
                     try {
+
+                        // Attachment processing here
+
                         if (message.getBody().contains("cat") || message.getBody().contains("кот") || message.getBody().contains("кошка"))
-                            sendCat(vk, actor, message);
-                        System.out.println(vk.messages().send(actor).
-                                userId(userId).message(chatBot.sayInReturn(message.getBody())).execute());
+                            AttachmentProcessor.sendCat(vk, actor, message);
+                        else if (message.getBody().contains("audio") || message.getBody().contains("аудио"))
+                            AttachmentProcessor.sendAudio(vk, actor, message);
+                        else if (message.getBody().contains("help") || message.getBody().contains("помощь"))
+                            AttachmentProcessor.sendHelp(vk, actor, message);
+                        else
+                            System.out.println(vk.messages().send(actor).
+                                    userId(userId).message(chatBot.sayInReturn(message.getBody())).execute());
                     } catch (HardResetException e) {
                         System.out.println("BOT TURNED OFF BY " + userId);
                         exit(1);
@@ -83,15 +88,6 @@ public class Solution {
                 }
 
             }
-        }
-    }
-
-    private static void sendCat(VkApiClient vk, UserActor actor, Message message) {
-        try {
-            int userId = message.getUserId();
-            vk.messages().send(actor).userId(userId).attachment("photo275752427_456242731").execute();
-        } catch (ApiException | ClientException e) {
-            e.printStackTrace();
         }
     }
 
