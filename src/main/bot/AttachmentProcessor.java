@@ -35,38 +35,8 @@ class AttachmentProcessor {
         } catch (ApiException | ClientException e) {
             e.printStackTrace();
         }
-
-//        try {
-//            int userId = message.getUserId();
-//            vk.messages().send(actor).userId(userId).attachment("photo275752427_456242731").execute();
-//        } catch (ApiException | ClientException e) {
-//            e.printStackTrace();
-//        }
     }
 
-    static void sendAudio(VkApiClient vk, UserActor actor, Message message) {
-
-
-        //todo: send 10 first audios found with the parsed message (audio ..., аудио ...)
-    }
-
-    static void sendPost(VkApiClient vk, UserActor actor, Message message) {
-
-
-    }
-
-    static void sendPost(VkApiClient vk, UserActor actor, Message message, String post) {
-
-
-    }
-
-
-    static void sendHelp(VkApiClient vk, UserActor actor, Message message) {
-        String post = null;
-        sendPost(vk, actor, message, post);
-
-
-    }
 
 
 }

@@ -69,12 +69,6 @@ class ChatBot {
     }
 
 
-    private String readWiki() {
-        //Wiki wiki = new Wiki("en.wikipedia.org");
-
-        return null;
-    }
-
     private String calculateUptime() {
         long endTime = System.currentTimeMillis();
         long totalTime = endTime - Solution.startTime;

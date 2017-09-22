@@ -6,10 +6,6 @@ public class ScheduleParser {
 
     static String url = "http://schedule.ispu.ru/";
 
-    ScheduleParser() {
-
-    }
-
     private static ArrayList<String> readSchedule() {
 
         return null;
