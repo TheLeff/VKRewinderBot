@@ -9,7 +9,7 @@ import com.vk.api.sdk.objects.messages.Message;
 import java.util.ArrayList;
 import java.util.Random;
 
-class AttachmentProcessor {
+class AttachmentProcessor extends Processor {
 
     private static Random r = new Random();
     private static ArrayList<String> catArray = new ArrayList() {{
@@ -28,10 +28,11 @@ class AttachmentProcessor {
 
     static void sendCat(VkApiClient vk, UserActor actor, Message message) {
 
-
+        String cat = catArray.get(r.nextInt(catArray.size()));
+        History.add(cat);
         try {
             int userId = message.getUserId();
-            vk.messages().send(actor).userId(userId).attachment(catArray.get(r.nextInt(catArray.size()))).execute();
+            vk.messages().send(actor).userId(userId).attachment(cat).execute();
         } catch (ApiException | ClientException e) {
             e.printStackTrace();
         }

@@ -9,7 +9,7 @@ import java.util.Scanner;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
-public class Translator {
+public class Translator extends Processor {
 
     public Translator() {
 
@@ -59,9 +59,8 @@ public class Translator {
 
             try {
                 future.get(10, TimeUnit.SECONDS);
-            } catch (InterruptedException ie) {
-            } catch (ExecutionException ee) {
-            } catch (TimeoutException te) {
+            } catch (InterruptedException | ExecutionException ignored) {
+            } catch (TimeoutException e) {
                 return "Yandex Timeout";
             }
             if (!executor.isTerminated())
@@ -71,9 +70,12 @@ public class Translator {
             int end = json[0].indexOf("]");
             String translated = json[0].substring(start + 2, end - 1);
             System.out.println(json[0]);
-            if (enteredText.matches(translated)) { // todo: fix fucked up return of en>ru (json is fine)
+            if (enteredText.matches(translated)) {
+                History.add("ERROR - " + enteredText);
                 return "Слишком длинное выражение или ошибка";
             }
+
+            History.add(enteredText + " - " + translated);
             return "Yandex: " + enteredText + " - " + translated;
 
         }

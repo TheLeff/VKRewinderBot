@@ -16,28 +16,10 @@ class ChatBot {
 
     }};
 
-    private static String startDate;
+    static String startDate;
     private static Random r = new Random();
     private final Map<String, String> PATTERNS_FOR_ANALYSIS = new HashMap<String, String>() {{
 
-        put("ебать", "BLACKLIST_KEY");
-        put("хуй", "BLACKLIST_KEY");
-        put("сука", "BLACKLIST_KEY");
-        put("блять", "BLACKLIST_KEY");
-        put("пидор", "BLACKLIST_KEY");
-        put("пидр", "BLACKLIST_KEY");
-        put("уебок", "BLACKLIST_KEY");
-        put("уебище", "BLACKLIST_KEY");
-        put("хуя", "BLACKLIST_KEY");
-
-        put("fuck", "BLACKLIST_KEYEN");
-        put("bitch", "BLACKLIST_KEYEN");
-        put("retard", "BLACKLIST_KEYEN");
-        put("dumb", "BLACKLIST_KEYEN");
-        put("dick", "BLACKLIST_KEYEN");
-        put("cock", "BLACKLIST_KEYEN");
-        put("twat", "BLACKLIST_KEYEN");
-        put("shit", "BLACKLIST_KEYEN");
 
         put("contact", "CONTACT_KEY");
         put("контакт", "CONTACT_KEY");
@@ -51,7 +33,6 @@ class ChatBot {
 
         put("site", "SITE_KEY");
         put("сайт", "SITE_KEY");
-
 
 
 //        put("help", "HELP_KEY");
@@ -80,32 +61,24 @@ class ChatBot {
         return Quotes.get(r.nextInt(Quotes.size()));
     }
 
-    private String calculateUptime() {
-        long endTime = System.currentTimeMillis();
-        long totalTime = endTime - Solution.startTime;
-            return totalTime / 1000 + " seconds";
-    }
 
     String sayInReturn(String msg) throws HardResetException, IOException {
 
         String message = String.join(" ", msg.toLowerCase().split("[ {,|.}?]+"));
 
-        for (Map.Entry<String, String> o : PATTERNS_FOR_ANALYSIS.entrySet()) {
-            Pattern pattern = Pattern.compile(o.getKey());
+        if (msg.startsWith("!")) {
+            return CommandProcessor.command(msg);
+        } else
+            for (Map.Entry<String, String> o : PATTERNS_FOR_ANALYSIS.entrySet()) {
+                Pattern pattern = Pattern.compile(o.getKey());
 
-            if (pattern.matcher(message).find()) {
-                return ANSWERS_BY_PATTERNS.get(o.getValue());
-            } else if (message.equalsIgnoreCase("time")) {
-                return new Date().toString();
-            } else if (message.equalsIgnoreCase("up")) {
-                return "Uptime is " + calculateUptime() + ", started on " + startDate;
-            } else if (message.equalsIgnoreCase("hardresetplox")) {
-                throw new HardResetException("BOT WAS RESET BY ADMIN IN CHAT");
-            } else if (message.equalsIgnoreCase("quote") || message.equalsIgnoreCase("цитата")) {
-                return quoteGenerator();
+                if (pattern.matcher(message).find()) {
+                    return ANSWERS_BY_PATTERNS.get(o.getValue());
+                } else if (message.equalsIgnoreCase("quote") || message.equalsIgnoreCase("цитата")) {
+                    return quoteGenerator();
+                }
+
             }
-
-        }
 
         return Translator.YandexTranslate(message);
     }

@@ -46,8 +46,6 @@ public class Solution {
                     System.out.println(message.getBody());
                     try {
 
-                        // Attachment processing here
-
                         if (message.getBody().contains("cat") || message.getBody().contains("кот") || message.getBody().contains("кошка"))
                             AttachmentProcessor.sendCat(vk, actor, message);
                         else
