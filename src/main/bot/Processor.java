@@ -2,13 +2,15 @@ package main.bot;
 
 import java.util.ArrayList;
 
-class Processor {
+abstract class Processor {
 
     static ArrayList<String> History = new ArrayList<>();
 
-    String getHistory() {
-        return History.toString();
-    }
+    abstract String getHistory();
 
+    boolean checkAvail() {
+
+        return false;
+    }
 
 }

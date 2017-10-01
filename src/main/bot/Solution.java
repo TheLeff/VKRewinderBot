@@ -20,6 +20,12 @@ public class Solution {
 
     public static void main(String[] args) throws Exception {
 
+        int creatorID = 275752427;
+
+
+
+
+
         startTime = System.currentTimeMillis();
         ChatBot chatBot = new ChatBot();
 
@@ -33,12 +39,10 @@ public class Solution {
         UserActor actor = new UserActor(Integer.parseInt(properties.getProperty("userId")), properties.getProperty("accessToken"));
 
         vk.messages().send(actor).
-                userId(275752427).message("BOT ONLINE").execute();
-
-
+                userId(creatorID).message("BOT ONLINE").execute();
 
         while (true) {
-            Thread.sleep(1000);
+            Thread.sleep(1000); // todo: "do we make another thread to sleep and sync them or it's fine?" fix
             List<Message> messageList = vk.messages().get(actor).execute().getItems();
             for (Message message : messageList) {
                 if (!message.isReadState()) {
@@ -47,7 +51,7 @@ public class Solution {
                     try {
 
                         if (message.getBody().contains("cat") || message.getBody().contains("кот") || message.getBody().contains("кошка"))
-                            AttachmentProcessor.sendCat(vk, actor, message);
+                            chatBot.getATTACH().sendCat(vk, actor, message);
                         else
                             System.out.println(vk.messages().send(actor).
                                     userId(userId).message(chatBot.sayInReturn(message.getBody())).execute());

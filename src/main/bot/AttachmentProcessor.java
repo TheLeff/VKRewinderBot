@@ -11,8 +11,8 @@ import java.util.Random;
 
 class AttachmentProcessor extends Processor {
 
-    private static Random r = new Random();
-    private static ArrayList<String> catArray = new ArrayList() {{
+    private Random r = new Random();
+    private ArrayList<String> catArray = new ArrayList() {{
         add("photo275752427_456242731");
         add("photo275752427_456242191");
         add("photo275752427_456241696");
@@ -26,7 +26,7 @@ class AttachmentProcessor extends Processor {
     AttachmentProcessor() {
     }
 
-    static void sendCat(VkApiClient vk, UserActor actor, Message message) {
+    void sendCat(VkApiClient vk, UserActor actor, Message message) {
 
         String cat = catArray.get(r.nextInt(catArray.size()));
         History.add(cat);
@@ -39,5 +39,8 @@ class AttachmentProcessor extends Processor {
     }
 
 
-
+    @Override
+    String getHistory() {
+        return null;
+    }
 }

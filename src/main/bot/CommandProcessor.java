@@ -6,12 +6,12 @@ import java.util.Date;
 
 class CommandProcessor extends Processor {
 
-    static String command(String message) throws HardResetException {
+    String command(String message) throws HardResetException {
         History.add(message);
         return (function(message.replaceAll("[-+.^:,!]", "")));
     }
 
-    private static String function(String message) throws HardResetException {
+    private String function(String message) throws HardResetException {
 
         switch (message) {
             case "uptime":
@@ -21,13 +21,14 @@ class CommandProcessor extends Processor {
             case "hardresetplox":
                 throw new HardResetException("BOT TURNED OFF");
             case "history":
-                return fullHistory();
+                return getHistory();
 
         }
         return "WRONG COMMAND";
     }
 
-    private static String fullHistory() {
+    @Override
+    String getHistory() {
 
         return Processor.History.toString();
     }
@@ -36,6 +37,11 @@ class CommandProcessor extends Processor {
         long endTime = System.currentTimeMillis();
         long totalTime = endTime - Solution.startTime;
         return totalTime / 1000 + " seconds, from: " + ChatBot.startDate;
+    }
+
+    @Override
+    boolean checkAvail() {
+        return true;
     }
 
 }
