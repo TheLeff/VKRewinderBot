@@ -77,7 +77,6 @@ class ChatBot {
                     return quoteGenerator();
                 }
             }
-        return TRANSLATOR.YandexTest(message);
-//        return TRANSLATOR.YandexTranslate(message);
+        return TRANSLATOR.YandexTranslate(message);
     }
 }

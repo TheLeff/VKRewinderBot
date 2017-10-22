@@ -3,6 +3,7 @@ package main.bot;
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
+import com.vk.api.sdk.exceptions.ApiParamException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.messages.Message;
 import main.Exceptions.HardResetException;
@@ -58,6 +59,9 @@ public class Solution {
                     } catch (HardResetException e) {
                         System.out.println("BOT TURNED OFF BY " + userId);
                         exit(1);
+                    } catch (ApiParamException e) {
+                        System.out.println(vk.messages().send(actor).
+                                userId(userId).message("And what do you want me to do with it?").execute());
                     }
                 }
             }
