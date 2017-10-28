@@ -1,13 +1,20 @@
 package main.bot;
 
 import main.Exceptions.HardResetException;
+import main.bot.Processors.AttachmentProcessor;
+import main.bot.Processors.CommandProcessor;
+import main.bot.Processors.Translator;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
 
-class ChatBot {
+public class ChatBot {
 
+
+//    List<String> incomingMessages;
+
+    public static String startDate;
     private final ArrayList<String> Quotes = new ArrayList() {{
         add("In search of a main class manifest since 2013");
         add("Existential crisis as a lifestyle");
@@ -25,11 +32,6 @@ class ChatBot {
 //        put("HELP_KEY", "I am a Bot Rewinder, which can help you with various stuff. Here is the list of my commands: "); //todo: list
 
     }};
-    private AttachmentProcessor ATTACH;
-    private CommandProcessor COMMAND;
-
-    static String startDate;
-    private Translator TRANSLATOR;
     private final Map<String, String> PATTERNS_FOR_ANALYSIS = new HashMap<String, String>() {{
 
         put("contact", "CONTACT_KEY");
@@ -45,12 +47,26 @@ class ChatBot {
         put("сайт", "SITE_KEY");
 
     }};
+    private AttachmentProcessor ATTACH;
+    private CommandProcessor COMMAND;
+    private Translator TRANSLATOR;
     private Random r = new Random();
 
-    ChatBot() {
+    ChatBot(int code) throws Exception {
         this.ATTACH = new AttachmentProcessor();
         this.COMMAND = new CommandProcessor();
-        this.TRANSLATOR = new Translator();
+
+        switch (code) {
+            case 0:
+                this.TRANSLATOR = new Translator().new Yandex();
+                break;
+            case 1:
+                this.TRANSLATOR = new Translator().new Yandex().new Extended();
+                break;
+            default:
+                throw new Exception("TRANSLATOR TYPE RECOGNITION ERROR");
+        }
+
     }
 
     private String quoteGenerator() {
@@ -61,12 +77,14 @@ class ChatBot {
         return ATTACH;
     }
 
-    String sayInReturn(String msg) throws HardResetException, IOException {
+    String sayInReturn(int userId, String msg) throws HardResetException, IOException {
+
+//        incomingMessages.add(msg);
 
         String message = String.join(" ", msg.toLowerCase().split("[ {,|.}?]+"));
 
         if (msg.startsWith("!")) {
-            return COMMAND.command(msg);
+            return COMMAND.command(userId, msg);
         } else
             for (Map.Entry<String, String> o : PATTERNS_FOR_ANALYSIS.entrySet()) {
                 Pattern pattern = Pattern.compile(o.getKey());
@@ -77,6 +95,6 @@ class ChatBot {
                     return quoteGenerator();
                 }
             }
-        return TRANSLATOR.YandexTranslate(message);
+        return TRANSLATOR.translate(userId, message);
     }
 }

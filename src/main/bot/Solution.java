@@ -7,6 +7,7 @@ import com.vk.api.sdk.exceptions.ApiParamException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.messages.Message;
 import main.Exceptions.HardResetException;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,21 +18,28 @@ import static java.lang.System.exit;
 
 public class Solution {
 
-    static long startTime;
+
+    public static long startTime;
+    private static boolean DEBUG_STATE = true;
+    private static String DEBUG_MESSAGE = null;
+    private static int DEBUGID = 275752427;
 
     public static void main(String[] args) throws Exception {
-
-        int creatorID = 275752427;
-
-
 
 
 
         startTime = System.currentTimeMillis();
-        ChatBot chatBot = new ChatBot();
+
+        ChatBot chatBot = new ChatBot(0);
+
+        /*
+        0 - Yandex Base (one word translation)
+        1 - Yandex Extended (broken atm)
+         */
 
         TransportClient transportClient = HttpTransportClient.getInstance();
         VkApiClient vk = new VkApiClient(transportClient);
+
 
         FileInputStream fileInputStream = new FileInputStream(new File("src/main/resources/config.properties"));
         Properties properties = new Properties();
@@ -40,22 +48,21 @@ public class Solution {
         UserActor actor = new UserActor(Integer.parseInt(properties.getProperty("userId")), properties.getProperty("accessToken"));
 
         vk.messages().send(actor).
-                userId(creatorID).message("BOT ONLINE").execute();
+                userId(DEBUGID).message("BOT ONLINE").execute();
 
         while (true) {
-            Thread.sleep(1000); // todo: "do we make another thread to sleep and sync them or it's fine?" fix
-            List<Message> messageList = vk.messages().get(actor).execute().getItems();
+            Thread.sleep(1000);
+            List<Message> messageList = vk.messages().get(actor).execute().getItems(); //todo: create thread here
             for (Message message : messageList) {
                 if (!message.isReadState()) {
                     int userId = message.getUserId();
                     System.out.println(message.getBody());
                     try {
-
                         if (message.getBody().contains("cat") || message.getBody().contains("кот") || message.getBody().contains("кошка"))
                             chatBot.getATTACH().sendCat(vk, actor, message);
                         else
                             System.out.println(vk.messages().send(actor).
-                                    userId(userId).message(chatBot.sayInReturn(message.getBody())).execute());
+                                    userId(userId).message(checkDebug() + chatBot.sayInReturn(userId, message.getBody())).execute());
                     } catch (HardResetException e) {
                         System.out.println("BOT TURNED OFF BY " + userId);
                         exit(1);
@@ -66,5 +73,13 @@ public class Solution {
                 }
             }
         }
+    }
+
+    private static String checkDebug() {
+        if (DEBUG_STATE)
+            if (StringUtils.isNotEmpty(DEBUG_MESSAGE) && StringUtils.isNotBlank(DEBUG_MESSAGE))
+                return "DEBUG IN PROGRESS - " + DEBUG_MESSAGE + ":" + System.lineSeparator();
+            else return "DEBUG IN PROGRESS: " + System.lineSeparator();
+        return StringUtils.EMPTY;
     }
 }

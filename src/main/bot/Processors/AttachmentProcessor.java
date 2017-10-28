@@ -1,15 +1,16 @@
-package main.bot;
+package main.bot.Processors;
 
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.objects.messages.Message;
+import main.bot.Misc;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-class AttachmentProcessor extends Processor {
+public class AttachmentProcessor extends Processor {
 
     private Random r = new Random();
     private ArrayList<String> catArray = new ArrayList() {{
@@ -23,13 +24,13 @@ class AttachmentProcessor extends Processor {
         add("photo275752427_387553197");
     }};
 
-    AttachmentProcessor() {
-    }
-
-    void sendCat(VkApiClient vk, UserActor actor, Message message) {
+    public void sendCat(VkApiClient vk, UserActor actor, Message message) {
 
         String cat = catArray.get(r.nextInt(catArray.size()));
-        History.add(cat);
+        if (!History.isEmpty())
+            History.add(System.lineSeparator() + Misc.getUserName(actor.getId()) + " [" + message.getBody() + ']');
+        else History.add((Misc.getUserName(actor.getId()) + " [" + message.getBody() + ']').substring(1));
+
         try {
             int userId = message.getUserId();
             vk.messages().send(actor).userId(userId).attachment(cat).execute();
@@ -37,7 +38,6 @@ class AttachmentProcessor extends Processor {
             e.printStackTrace();
         }
     }
-
 
     @Override
     String getHistory() {

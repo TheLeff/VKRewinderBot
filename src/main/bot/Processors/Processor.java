@@ -1,4 +1,4 @@
-package main.bot;
+package main.bot.Processors;
 
 import java.util.ArrayList;
 
