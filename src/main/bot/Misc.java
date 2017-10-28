@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -18,10 +17,6 @@ public class Misc {
 
         try {
             connection = new URL(url).openConnection();
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.printf("No text for translate");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -44,11 +39,14 @@ public class Misc {
 //            e.printStackTrace();
 //        }
 
-        return '[' + yt.response.toString().replaceAll("[\\[\\](){}]", "") + ']';
+        if (yt != null) {
+            return '[' + yt.response.toString().replaceAll("[\\[\\](){}]", "") + ']';
+        }
+        return "ERROR";
     }
 
     public class ParseUser {
-        public ArrayList<UserInfo> response;
+        ArrayList<UserInfo> response;
     }
 
     class UserInfo {

@@ -20,7 +20,7 @@ public class ChatBot {
         add("Existential crisis as a lifestyle");
         add("Every day of work on this bot passes and jokes about suicide become less and less funnier");
         add("Sometimes I think Synyster Gates needs some serious mental help. No sane human can play like that");
-
+        add("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE NORMIES");
     }};
     private final Map<String, String> ANSWERS_BY_PATTERNS = new HashMap<String, String>() {{
         startDate = new Date().toString();

@@ -18,15 +18,12 @@ import static java.lang.System.exit;
 
 public class Solution {
 
-
     public static long startTime;
     private static boolean DEBUG_STATE = true;
     private static String DEBUG_MESSAGE = null;
     private static int DEBUGID = 275752427;
 
     public static void main(String[] args) throws Exception {
-
-
 
         startTime = System.currentTimeMillis();
 
