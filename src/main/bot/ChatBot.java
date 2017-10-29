@@ -3,14 +3,13 @@ package main.bot;
 import main.Exceptions.HardResetException;
 import main.bot.Processors.AttachmentProcessor;
 import main.bot.Processors.CommandProcessor;
-import main.bot.Processors.Translator;
+import main.bot.Processors.TranslatorProcessor;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
 
 public class ChatBot {
-
 
 //    List<String> incomingMessages;
 
@@ -49,7 +48,7 @@ public class ChatBot {
     }};
     private AttachmentProcessor ATTACH;
     private CommandProcessor COMMAND;
-    private Translator TRANSLATOR;
+    private TranslatorProcessor TRANSLATOR;
     private Random r = new Random();
 
     ChatBot(int code) throws Exception {
@@ -58,10 +57,10 @@ public class ChatBot {
 
         switch (code) {
             case 0:
-                this.TRANSLATOR = new Translator().new Yandex();
+                this.TRANSLATOR = new TranslatorProcessor().new Yandex();
                 break;
             case 1:
-                this.TRANSLATOR = new Translator().new Yandex().new Extended();
+                this.TRANSLATOR = new TranslatorProcessor().new Yandex().new Extended();
                 break;
             default:
                 throw new Exception("TRANSLATOR TYPE RECOGNITION ERROR");
@@ -78,8 +77,6 @@ public class ChatBot {
     }
 
     String sayInReturn(int userId, String msg) throws HardResetException, IOException {
-
-//        incomingMessages.add(msg);
 
         String message = String.join(" ", msg.toLowerCase().split("[ {,|.}?]+"));
 

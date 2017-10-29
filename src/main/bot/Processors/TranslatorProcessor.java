@@ -15,13 +15,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
-public class Translator extends Processor {
+public class TranslatorProcessor extends Processor {
 
     public String translate(int userId, String enteredText) {
         return "OOPS";
     }
 
-    public class Yandex extends Translator {
+    public class Yandex extends TranslatorProcessor {
 
         @Override
         public String translate(int userId, String enteredText) {
@@ -64,7 +64,7 @@ public class Translator extends Processor {
             return null;
         }
 
-        public class Extended extends Translator {
+        public class Extended extends TranslatorProcessor {
             @Override
             public String translate(int userId, String enteredText) {
                 try {
