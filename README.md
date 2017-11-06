@@ -1,9 +1,7 @@
 # Bot Rewinder
 
-A bot for daily usage. Base project - https://github.com/Etyfly
+A bot for daily usage. It's online here - https://vk.com/rewbot
 
-Part of code was taken from https://github.com/biblelamp
+PM community and it will translate stuff. And send cats from time to time.
 
-Служебный бот для разных случаев в жизни. Проект, взятый за основу - https://github.com/Etyfly
-
-Часть кода позаимствована у https://github.com/biblelamp
+Part of code was taken from https://github.com/biblelamp & https://github.com/Etyfly
