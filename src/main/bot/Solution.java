@@ -16,10 +16,11 @@ import java.util.Properties;
 
 import static java.lang.System.exit;
 
+
 public class Solution {
 
     public static long startTime;
-    private static boolean DEBUG_STATE = true;
+    private static boolean DEBUG_STATE = false;
     private static String DEBUG_MESSAGE = null;
     private static int DEBUGID = 275752427;
 
@@ -34,15 +35,17 @@ public class Solution {
         1 - Yandex Extended (broken atm)
          */
 
-        TransportClient transportClient = HttpTransportClient.getInstance();
-        VkApiClient vk = new VkApiClient(transportClient);
-
-
         FileInputStream fileInputStream = new FileInputStream(new File("src/main/resources/config.properties"));
         Properties properties = new Properties();
         properties.load(fileInputStream);
 
+
+        TransportClient transportClient = HttpTransportClient.getInstance();
+        VkApiClient vk = new VkApiClient(transportClient);
+
         UserActor actor = new UserActor(Integer.parseInt(properties.getProperty("userId")), properties.getProperty("accessToken"));
+
+//        UserActor actor = new UserActor(275752427, null); // id + accesstoken
 
         vk.messages().send(actor).
                 userId(DEBUGID).message("BOT ONLINE").execute();
@@ -55,7 +58,7 @@ public class Solution {
                     int userId = message.getUserId();
                     System.out.println(message.getBody());
                     try {
-                        if (message.getBody().contains("cat") || message.getBody().contains("кот") || message.getBody().contains("кошка"))
+                        if (message.getBody().toLowerCase().contains("cat") || message.getBody().toLowerCase().contains("кот") || message.getBody().toLowerCase().contains("кошка"))
                             chatBot.getATTACH().sendCat(vk, actor, message);
                         else
                             System.out.println(vk.messages().send(actor).

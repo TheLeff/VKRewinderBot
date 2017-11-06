@@ -11,7 +11,9 @@ import java.util.regex.Pattern;
 
 public class ChatBot {
 
+
 //    List<String> incomingMessages;
+
 
     public static String startDate;
     private final ArrayList<String> Quotes = new ArrayList() {{
@@ -50,6 +52,7 @@ public class ChatBot {
     private CommandProcessor COMMAND;
     private TranslatorProcessor TRANSLATOR;
     private Random r = new Random();
+
 
     ChatBot(int code) throws Exception {
         this.ATTACH = new AttachmentProcessor();

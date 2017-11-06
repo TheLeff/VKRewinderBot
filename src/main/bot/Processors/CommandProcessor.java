@@ -10,6 +10,12 @@ import java.util.Date;
 public class CommandProcessor extends Processor {
 
 
+    private static String calculateUptime() {
+        long endTime = System.currentTimeMillis();
+        long totalTime = endTime - Solution.startTime;
+        return totalTime / 1000 + " seconds, from: " + ChatBot.startDate;
+    }
+
     public String command(int userId, String message) throws HardResetException {
 
         if (!History.isEmpty())
@@ -18,7 +24,6 @@ public class CommandProcessor extends Processor {
             History.add((Misc.getUserName(userId) + " [" + message).substring(1) + ']');
         return (function(message.replaceAll("[-+.^:,!]", "")));
     }
-
 
     private String function(String message) throws HardResetException {
 
@@ -39,12 +44,6 @@ public class CommandProcessor extends Processor {
     String getHistory() {
 
         return Processor.History.toString().substring(0, Processor.History.toString().length() - 1);
-    }
-
-    private static String calculateUptime() {
-        long endTime = System.currentTimeMillis();
-        long totalTime = endTime - Solution.startTime;
-        return totalTime / 1000 + " seconds, from: " + ChatBot.startDate;
     }
 
     @Override
