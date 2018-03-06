@@ -27,8 +27,8 @@ public class ChatBot {
         startDate = new Date().toString();
         put("SITE_KEY", "https://leff.su/");
         put("MAIL_KEY", "leff@leff.su");
-        put("TELEGRAM_KEY", "https://t.me/theleff");
-        put("CONTACT_KEY", "https://leff.su/ \r\n t.me/theleff \r\n leff@leff.su");
+        put("TELEGRAM_KEY", "https://t.me/leffsu");
+        put("CONTACT_KEY", "https://leff.su/ \r\n t.me/leffsu \r\n leff@leff.su");
 
 //        put("HELP_KEY", "I am a Bot Rewinder, which can help you with various stuff. Here is the list of my commands: "); //todo: list
 
