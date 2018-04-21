@@ -42,6 +42,7 @@ public class Misc {
 //        }
 
         if (yt != null) {
+            if(yt.response!=null)
             return '[' + yt.response.toString().replaceAll("[\\[\\](){}]", "") + ']';
         }
         return "ERROR";
